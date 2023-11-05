@@ -14,6 +14,13 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class WebTest {
+
+    public String date(String pattern,  int addedDays) {
+        String date = (LocalDate.now().plusDays(addedDays)).format(DateTimeFormatter.ofPattern(pattern));
+        return date;
+    }
+
+
     @BeforeEach
     void initEach() {
         open("http://localhost:9999");
@@ -25,8 +32,8 @@ public class WebTest {
     void correctValueTest() {
         $("[data-test-id=city] input").setValue("Екатеринбург");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Иванов-Сидоров Петр");
@@ -44,8 +51,8 @@ public class WebTest {
     void dorpDownValueTest() {
         $("[data-test-id=city] input").setValue("Екатеринбург");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Иванов-Сидоров Петр");
@@ -63,15 +70,18 @@ public class WebTest {
         $("[data-test-id=city] input").setValue("Екатеринбург");
         Random random = new Random();
         DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate selectedDate = LocalDate.now().plusDays((random.nextInt(11) + 3));
+        int addedDays = random.nextInt(11)+3;
+        LocalDate selectedDate = LocalDate.now().plusDays(addedDays);
         String date = selectedDate.format(pattern);
         $(".input__icon").click();
-        String day = date.substring(0, 1);
-        ;
-        if (day.startsWith("0")) {
-            day = day.substring(1, 1);
+        if (selectedDate.getMonth().equals(LocalDate.now().getMonth())){
+            $$(".calendar__day").findBy(text(String.valueOf(selectedDate.getDayOfMonth()))).click();
         }
-        $$(".calendar__day").findBy(text(String.valueOf(selectedDate.getDayOfMonth()))).click();
+        else {
+            $("[data-step='1']").click();;
+            $$(".calendar__day").findBy(text(String.valueOf(selectedDate.getDayOfMonth()))).click();
+        }
+
         $("[data-test-id=name] input").setValue("Сант-Жермен");
         $("[data-test-id=phone] input").setValue("+79270000002");
         $("[data-test-id=agreement]").click();
@@ -87,8 +97,8 @@ public class WebTest {
         $("[data-test-id='city'] input").setValue("Ка");
         $$(".menu-item__control").findBy(text("Калуга")).click();
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Сант-Жермен");
@@ -106,8 +116,8 @@ public class WebTest {
     void emptyCityTest() {
         $("[data-test-id=city] input").setValue("");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Иванов-Сидоров Петр");
@@ -121,8 +131,8 @@ public class WebTest {
     void wrongCityTest() {
         $("[data-test-id=city] input").setValue("Кулибино");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Иванов-Сидоров Петр");
@@ -136,8 +146,8 @@ public class WebTest {
     void emptyNameTest() {
         $("[data-test-id=city] input").setValue("Рязань");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("");
@@ -151,8 +161,8 @@ public class WebTest {
     void nameWithSymvolsTest() {
         $("[data-test-id=city] input").setValue("Майкоп");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Иванов%Сидоров%Петр");
@@ -166,8 +176,8 @@ public class WebTest {
     void emptyPhoneTest() {
         $("[data-test-id=city] input").setValue("Барнаул");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Маша");
@@ -181,8 +191,8 @@ public class WebTest {
     void smallPhoneTest() {
         $("[data-test-id=city] input").setValue("Краснодар");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Маша");
@@ -196,8 +206,8 @@ public class WebTest {
     void bigPhoneTest() {
         $("[data-test-id=city] input").setValue("Чита");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Маша");
@@ -211,8 +221,8 @@ public class WebTest {
     void phoneWithoutPlusTest() {
         $("[data-test-id=city] input").setValue("Чита");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Маша");
@@ -226,8 +236,8 @@ public class WebTest {
     void withoutAcceptTest() {
         $("[data-test-id=city] input").setValue("Калуга");
         Random random = new Random();
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String date = (LocalDate.now().plusDays((random.nextInt(11) + 3))).format(pattern);
+        int addedDays = random.nextInt(11)+3;
+        String date = date("dd.MM.yyyy", (addedDays));
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
         $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=name] input").setValue("Сант-Жермен");
